@@ -8,9 +8,11 @@ import { setOriginalData, setProductsData } from "@/redux/productSlice";
 import { UseSelector, useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
-export default function Home({ data }) {
+export default function Home() {
   const dispatch = useDispatch();
   const originalData = useSelector((state) => state.products.originalData);
+  const productsData = useSelector((state) => state.products.productsData);
+
   const [sorted, setSorted] = useState(false);
   const [category, setCategory] = useState({
     mains: false,
@@ -20,14 +22,27 @@ export default function Home({ data }) {
     weird: false,
   });
 
-  useEffect(() => {
-    if (!originalData) {
-      dispatch(setOriginalData({ ...data }));
-      dispatch(setProductsData({ ...data }));
-    }
-  }, [data]);
+const getData = async() => {
+  const res = await axios.get(
+    "https://pink-dragonfly-toga.cyclic.app/get-data"
+  );
+  const aggregateByCategory = res.data.reduce((group, product) => {
+    const { category } = product;
+    group[category] = group[category] ?? [];
+    group[category].push(product);
+    return group;
+  }, {});
+  dispatch(setOriginalData({ ...aggregateByCategory }));
+      dispatch(setProductsData({ ...aggregateByCategory }));
 
-  const productsData = useSelector((state) => state.products.productsData);
+}
+
+  useEffect(() => {
+    if (originalData === null) {
+      getData();
+    }
+  }, [originalData, productsData]);
+
 
   const handleExpand = (productCat) => {
     if (!category[productCat]) {
@@ -171,20 +186,3 @@ export default function Home({ data }) {
     </div>
   );
 }
-
-export const getServerSideProps = async () => {
-  const res = await axios.get(
-    "https://pink-dragonfly-toga.cyclic.app/get-data"
-  );
-  const aggregateByCategory = res.data.reduce((group, product) => {
-    const { category } = product;
-    group[category] = group[category] ?? [];
-    group[category].push(product);
-    return group;
-  }, {});
-  return {
-    props: {
-      data: aggregateByCategory,
-    },
-  };
-};
