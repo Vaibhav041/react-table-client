@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 export const productSlice = createSlice({
   name: "product",
   initialState: {
-    originalData: {},
-    productsData: {},
+    originalData: null,
+    productsData: null,
   },
   reducers: {
     setOriginalData: (state, action) => {
