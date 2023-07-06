@@ -1,118 +1,197 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+"use client";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import Category from "@/components/Category";
+import ExpandIcon from "@mui/icons-material/Expand";
+import { setOriginalData, setProductsData } from "@/redux/productSlice";
+import { UseSelector, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-const inter = Inter({ subsets: ['latin'] })
+export default function Home({ data }) {
+  const dispatch = useDispatch();
+  const originalData = useSelector(state => state.products.originalData);
+  const [sorted, setSorted] = useState(false);
+  const [category, setCategory] = useState({
+    mains: false,
+    appetizer: false,
+    dessert: false,
+    clone: false,
+    weird: false,
+  });
 
-export default function Home() {
+  useEffect(() => {
+    if (!originalData) {
+      dispatch(setOriginalData({...data}));
+      dispatch(setProductsData({ ...data }));
+    }
+  }, [data]);
+
+  const productsData = useSelector((state) => state.products.productsData);
+
+  const handleExpand = (productCat) => {
+    if (!category[productCat]) {
+      setCategory({ ...category, [productCat]: true });
+    } else {
+      setCategory({ ...category, [productCat]: false });
+    }
+  };
+
+  const getTrueValue = (identifier, productCat) => {
+    const temp = originalData[productCat].find((product) => product.id === identifier);
+    if (!temp) return;
+    return temp.price;
+  };
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
+    <div
+      style={{ height: "100%", minHeight: "100vh" }}
+      className=" w-full flex justify-center p-10 bg-blue-300"
     >
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              {Object.keys(originalData["weird"][0]).map((key, index) => {
+                if (
+                  key !== "_id" &&
+                  key !== "image" &&
+                  key !== "description" &&
+                  key !== "category"
+                ) {
+                  return (
+                    <th key={index}>
+                      {key === "price" && (
+                        <span
+                          className="mr-1 cursor-pointer"
+                          onClick={() => setSorted(!sorted)}
+                        >
+                          <FilterListIcon
+                            style={{
+                              color: sorted ? "blue" : "black",
+                              fontSize: "30px",
+                            }}
+                          />
+                        </span>
+                      )}
+                      {key}
+                    </th>
+                  );
+                }
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ padding: 0 }} colSpan={4}>
+                <div className="w-full text-white p-1  bg-blue-800">
+                  <ExpandIcon
+                    className="cursor-pointer"
+                    onClick={() => handleExpand("mains")}
+                  />{" "}
+                  Mains
+                </div>
+              </td>
+            </tr>
+            {category.mains && (
+              <Category
+                data={productsData && productsData["mains"]}
+                doSort={sorted}
+                getTrueValue={getTrueValue}
+              />
+            )}
+            <tr>
+              <td style={{ padding: 0 }} colSpan={4}>
+                <div className="w-full text-white p-1  bg-blue-800">
+                  <ExpandIcon
+                    className="cursor-pointer"
+                    onClick={() => handleExpand("appetizer")}
+                  />{" "}
+                  Appetizer
+                </div>
+              </td>
+            </tr>
+            {category.appetizer && (
+              <Category
+              getTrueValue={getTrueValue}
+                data={productsData && productsData["appetizer"]}
+                doSort={sorted}
+              />
+            )}
+            <tr>
+              <td style={{ padding: 0 }} colSpan={4}>
+                <div className="w-full text-white p-1  bg-blue-800">
+                  <ExpandIcon
+                    className="cursor-pointer"
+                    onClick={() => handleExpand("dessert")}
+                  />{" "}
+                  Dessert
+                </div>
+              </td>
+            </tr>
+            {category.dessert && (
+              <Category
+              getTrueValue={getTrueValue}
+                data={productsData && productsData["dessert"]}
+                doSort={sorted}
+              />
+            )}
+            <tr>
+              <td style={{ padding: 0 }} colSpan={4}>
+                <div className="w-full text-white p-1  bg-blue-800">
+                  <ExpandIcon
+                    className="cursor-pointer"
+                    onClick={() => handleExpand("clone")}
+                  />{" "}
+                  Clone
+                </div>
+              </td>
+            </tr>
+            {category.clone && (
+              <Category
+              getTrueValue={getTrueValue}
+                data={productsData && productsData["clone"]}
+                doSort={sorted}
+              />
+            )}
+            <tr>
+              <td style={{ padding: 0 }} colSpan={4}>
+                <div className="w-full text-white p-1  bg-blue-800">
+                  <ExpandIcon
+                    className="cursor-pointer"
+                    onClick={() => handleExpand("weird")}
+                  />{" "}
+                  Weird
+                </div>
+              </td>
+            </tr>
+            {category.weird && (
+              <Category
+              getTrueValue={getTrueValue}
+                data={productsData && productsData["weird"]}
+                doSort={sorted}
+              />
+            )}
+          </tbody>
+        </table>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    </div>
+  );
 }
+
+export const getServerSideProps = async () => {
+  const res = await axios.get(
+    "https://pink-dragonfly-toga.cyclic.app/get-data"
+  );
+  const aggregateByCategory = res.data.reduce((group, product) => {
+    const { category } = product;
+    group[category] = group[category] ?? [];
+    group[category].push(product);
+    return group;
+  }, {});
+  return {
+    props: {
+      data: aggregateByCategory,
+    },
+  };
+};
