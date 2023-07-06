@@ -39,7 +39,10 @@ const getData = async() => {
 }
 
   useEffect(() => {
+    console.log("outside")
     if (originalData === null) {
+    console.log("inside");
+
       getData();
     }
   }, [originalData, productsData]);
