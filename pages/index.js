@@ -52,7 +52,7 @@ export default function Home({ data }) {
         <table>
           <thead>
             <tr>
-              {Object.keys(originalData["weird"][0]).map((key, index) => {
+              {Object.keys(originalData && originalData["weird"][0]).map((key, index) => {
                 if (
                   key !== "_id" &&
                   key !== "image" &&
