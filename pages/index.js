@@ -96,10 +96,10 @@ const getData = async() => {
           <tbody>
             <tr>
               <td style={{ padding: 0 }} colSpan={4}>
-                <div className="w-full text-white p-1  bg-blue-800">
+                <div onClick={() => handleExpand("mains")} className="w-full text-white p-1 cursor-pointer  bg-blue-800">
                   <ExpandIcon
                     className="cursor-pointer"
-                    onClick={() => handleExpand("mains")}
+                    
                   />{" "}
                   Mains
                 </div>
@@ -114,10 +114,10 @@ const getData = async() => {
             )}
             <tr>
               <td style={{ padding: 0 }} colSpan={4}>
-                <div className="w-full text-white p-1  bg-blue-800">
+                <div  onClick={() => handleExpand("appetizer")} className="w-full text-white p-1 cursor-pointer  bg-blue-800">
                   <ExpandIcon
                     className="cursor-pointer"
-                    onClick={() => handleExpand("appetizer")}
+                   
                   />{" "}
                   Appetizer
                 </div>
@@ -132,10 +132,10 @@ const getData = async() => {
             )}
             <tr>
               <td style={{ padding: 0 }} colSpan={4}>
-                <div className="w-full text-white p-1  bg-blue-800">
+                <div  onClick={() => handleExpand("dessert")} className="w-full text-white p-1 cursor-pointer bg-blue-800">
                   <ExpandIcon
                     className="cursor-pointer"
-                    onClick={() => handleExpand("dessert")}
+                   
                   />{" "}
                   Dessert
                 </div>
@@ -150,10 +150,10 @@ const getData = async() => {
             )}
             <tr>
               <td style={{ padding: 0 }} colSpan={4}>
-                <div className="w-full text-white p-1  bg-blue-800">
+                <div  onClick={() => handleExpand("clone")} className="w-full text-white p-1 cursor-pointer bg-blue-800">
                   <ExpandIcon
                     className="cursor-pointer"
-                    onClick={() => handleExpand("clone")}
+                   
                   />{" "}
                   Clone
                 </div>
@@ -168,10 +168,10 @@ const getData = async() => {
             )}
             <tr>
               <td style={{ padding: 0 }} colSpan={4}>
-                <div className="w-full text-white p-1  bg-blue-800">
+                <div onClick={() => handleExpand("weird")} className="w-full text-white p-1 cursor-pointer  bg-blue-800">
                   <ExpandIcon
                     className="cursor-pointer"
-                    onClick={() => handleExpand("weird")}
+                    
                   />{" "}
                   Weird
                 </div>
