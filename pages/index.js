@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 
 export default function Home({ data }) {
   const dispatch = useDispatch();
-  const originalData = useSelector(state => state.products.originalData);
+  const originalData = useSelector((state) => state.products.originalData);
   const [sorted, setSorted] = useState(false);
   const [category, setCategory] = useState({
     mains: false,
@@ -22,7 +22,7 @@ export default function Home({ data }) {
 
   useEffect(() => {
     if (!originalData) {
-      dispatch(setOriginalData({...data}));
+      dispatch(setOriginalData({ ...data }));
       dispatch(setProductsData({ ...data }));
     }
   }, [data]);
@@ -38,7 +38,9 @@ export default function Home({ data }) {
   };
 
   const getTrueValue = (identifier, productCat) => {
-    const temp = originalData[productCat].find((product) => product.id === identifier);
+    const temp = originalData[productCat].find(
+      (product) => product.id === identifier
+    );
     if (!temp) return;
     return temp.price;
   };
@@ -52,33 +54,24 @@ export default function Home({ data }) {
         <table>
           <thead>
             <tr>
-              {Object.keys(originalData?.weird[0]).map((key, index) => {
-                if (
-                  key !== "_id" &&
-                  key !== "image" &&
-                  key !== "description" &&
-                  key !== "category"
-                ) {
-                  return (
-                    <th key={index}>
-                      {key === "price" && (
-                        <span
-                          className="mr-1 cursor-pointer"
-                          onClick={() => setSorted(!sorted)}
-                        >
-                          <FilterListIcon
-                            style={{
-                              color: sorted ? "blue" : "black",
-                              fontSize: "30px",
-                            }}
-                          />
-                        </span>
-                      )}
-                      {key}
-                    </th>
-                  );
-                }
-              })}
+              <th>id</th>
+              <th>name</th>
+              <th>label</th>
+              <th>
+                {" "}
+                <span
+                  className="mr-1 cursor-pointer"
+                  onClick={() => setSorted(!sorted)}
+                >
+                  <FilterListIcon
+                    style={{
+                      color: sorted ? "blue" : "black",
+                      fontSize: "30px",
+                    }}
+                  />
+                </span>
+                price
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -113,7 +106,7 @@ export default function Home({ data }) {
             </tr>
             {category.appetizer && (
               <Category
-              getTrueValue={getTrueValue}
+                getTrueValue={getTrueValue}
                 data={productsData && productsData["appetizer"]}
                 doSort={sorted}
               />
@@ -131,7 +124,7 @@ export default function Home({ data }) {
             </tr>
             {category.dessert && (
               <Category
-              getTrueValue={getTrueValue}
+                getTrueValue={getTrueValue}
                 data={productsData && productsData["dessert"]}
                 doSort={sorted}
               />
@@ -149,7 +142,7 @@ export default function Home({ data }) {
             </tr>
             {category.clone && (
               <Category
-              getTrueValue={getTrueValue}
+                getTrueValue={getTrueValue}
                 data={productsData && productsData["clone"]}
                 doSort={sorted}
               />
@@ -167,7 +160,7 @@ export default function Home({ data }) {
             </tr>
             {category.weird && (
               <Category
-              getTrueValue={getTrueValue}
+                getTrueValue={getTrueValue}
                 data={productsData && productsData["weird"]}
                 doSort={sorted}
               />
