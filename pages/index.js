@@ -32,8 +32,9 @@ const getData = async() => {
     group[category].push(product);
     return group;
   }, {});
+  console.log(aggregateByCategory);
   dispatch(setOriginalData({ ...aggregateByCategory }));
-      dispatch(setProductsData({ ...aggregateByCategory }));
+  dispatch(setProductsData({ ...aggregateByCategory }));
 
 }
 
